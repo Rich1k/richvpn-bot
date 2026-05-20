@@ -2,11 +2,14 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# 🔐 токен берём из переменных среды (Railway / Render)
+# 🔐 TOKEN (Railway / Render env)
 TOKEN = os.getenv("8946221626:AAHz0oF5SgGeg9LT_0xiGLVq0q3ZgSLS19Q")
 
 # 📲 WireGuard iOS
 WIREGUARD_IOS_URL = "https://apps.apple.com/app/wireguard/id1441195209"
+
+# 👨‍💻 SUPPORT
+SUPPORT_USERNAME = "@Takeda_7878"
 
 
 # ================= START =================
@@ -15,12 +18,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("📲 Установить VPN (iOS)", callback_data="install_vpn")],
         [InlineKeyboardButton("💳 Тарифы", callback_data="tariffs")],
-        [InlineKeyboardButton("👤 Профиль", callback_data="profile")]
+        [InlineKeyboardButton("👤 Профиль", callback_data="profile")],
+        [InlineKeyboardButton("🆘 Поддержка", callback_data="support")]
     ]
 
     await update.message.reply_text(
         "👋 Добро пожаловать в *RichVPN*\n\n"
-        "🔐 Выберите действие:",
+        "🔐 Ваш личный VPN сервис",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
@@ -33,34 +37,30 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     data = query.data
 
-    # 📲 УСТАНОВКА VPN
+    # 📲 VPN INSTALL
     if data == "install_vpn":
-        keyboard = [
-            [InlineKeyboardButton("📲 WireGuard в App Store", url=WIREGUARD_IOS_URL)],
-            [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
-        ]
-
         await query.edit_message_text(
-            "📲 Установите VPN приложение на iPhone:",
-            reply_markup=InlineKeyboardMarkup(keyboard)
+            "📲 Установите WireGuard на iPhone:",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("📲 Открыть App Store", url=WIREGUARD_IOS_URL)],
+                [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
+            ])
         )
 
-    # 💳 ТАРИФЫ
+    # 💳 TARIFFS
     elif data == "tariffs":
-        keyboard = [
-            [InlineKeyboardButton("1 месяц — 150₽", callback_data="buy_1")],
-            [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
-        ]
-
         await query.edit_message_text(
             "💳 Тарифы RichVPN:\n\n"
             "• 1 месяц — 150₽\n"
             "• 3 месяца — 390₽\n"
-            "• 7 месяцев — 1190₽\n",
-            reply_markup=InlineKeyboardMarkup(keyboard)
+            "• 7 месяцев — 1190₽\n\n"
+            "💡 Оплата скоро будет доступна",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
+            ])
         )
 
-    # 👤 ПРОФИЛЬ
+    # 👤 PROFILE
     elif data == "profile":
         user = query.from_user
 
@@ -68,19 +68,32 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"👤 Профиль\n\n"
             f"ID: {user.id}\n"
             f"Имя: {user.first_name}\n"
-            f"Статус: ❌ Нет подписки"
+            f"Статус: ❌ Нет подписки",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
+            ])
         )
 
-    # 🔙 НАЗАД
+    # 🆘 SUPPORT
+    elif data == "support":
+        await query.edit_message_text(
+            f"🆘 Поддержка:\n{SUPPORT_USERNAME}",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
+            ])
+        )
+
+    # 🔙 BACK
     elif data == "back":
         keyboard = [
             [InlineKeyboardButton("📲 Установить VPN (iOS)", callback_data="install_vpn")],
             [InlineKeyboardButton("💳 Тарифы", callback_data="tariffs")],
-            [InlineKeyboardButton("👤 Профиль", callback_data="profile")]
+            [InlineKeyboardButton("👤 Профиль", callback_data="profile")],
+            [InlineKeyboardButton("🆘 Поддержка", callback_data="support")]
         ]
 
         await query.edit_message_text(
-            "🏠 Главное меню:",
+            "🏠 Главное меню",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
@@ -92,7 +105,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button))
 
-    print("Bot started...")
+    print("🔥 RichVPN bot started")
     app.run_polling()
 
 
