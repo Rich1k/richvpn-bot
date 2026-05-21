@@ -7,27 +7,33 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# 🔐 ENV (Render переменные)
-TOKEN = "8946221626:AAHz0oF5SgGeg9LT_0xiGLVq0q3ZgSLS19Q"
-SHOP_ID = os.getenv("SHOP_ID")
-SECRET_KEY = os.getenv("SECRET_KEY")
+# ================= CONFIG =================
 
-# 📲 WireGuard iOS
-WIREGUARD_IOS_URL = "https://apps.apple.com/app/wireguard/id1441195209"
+TOKEN ="8946221626:AAHz0oF5SgGeg9LT_0xiGLVq0q3ZgSLS19Q"
 
-# 👨‍💻 SUPPORT
 SUPPORT_USERNAME = "@Takeda_7878"
 
-# 💳 СБП (пока вручную)
-PAY_PHONE = "8924-077-71-00"
-PAY_BANK = "Т-Банк"
+PAY_PHONE = "8961-832-48-63"
+PAY_BANK = "ОЗОН БАНК"
 
+# ================= APPS =================
+
+WIREGUARD_IOS_URL = "https://apps.apple.com/app/wireguard/id1441195209"
+
+WIREGUARD_ANDROID_URL = (
+    "https://play.google.com/store/apps/details?id=com.wireguard.android"
+)
+
+WIREGUARD_WINDOWS_URL = "https://www.wireguard.com/install/"
+
+WIREGUARD_MAC_URL = "https://apps.apple.com/app/wireguard/id1451685025"
 
 # ================= START =================
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
-        [InlineKeyboardButton("📲 Установить VPN (iOS)", callback_data="install_vpn")],
+        [InlineKeyboardButton("📲 Установить VPN", callback_data="devices")],
         [InlineKeyboardButton("💳 Тарифы", callback_data="tariffs")],
         [InlineKeyboardButton("👤 Профиль", callback_data="profile")],
         [InlineKeyboardButton("🆘 Поддержка", callback_data="support")]
@@ -35,12 +41,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         "👋 Добро пожаловать в RichVPN\n\n"
-        "🔐 Ваш личный VPN сервис",
+        "🔐 Безопасный и быстрый VPN сервис",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-
 # ================= CALLBACK =================
+
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     query = update.callback_query
@@ -48,20 +54,107 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     data = query.data
 
-    if data == "install_vpn":
+    # ================= DEVICES =================
+
+    if data == "devices":
+
+        keyboard = [
+            [InlineKeyboardButton("📱 iPhone", callback_data="iphone")],
+            [InlineKeyboardButton("🤖 Android", callback_data="android")],
+            [InlineKeyboardButton("💻 Windows", callback_data="windows")],
+            [InlineKeyboardButton("🍎 MacOS", callback_data="mac")],
+            [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
+        ]
+
         await query.edit_message_text(
-            "📲 Установите WireGuard на iPhone:",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("📲 Скачать WireGuard", url=WIREGUARD_IOS_URL)],
-                [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
-            ])
+            "📲 Выберите устройство:",
+            reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # ================= IPHONE =================
+
+    elif data == "iphone":
+
+        keyboard = [
+            [InlineKeyboardButton("📥 Скачать WireGuard", url=WIREGUARD_IOS_URL)],
+            [InlineKeyboardButton("⬅️ Назад", callback_data="devices")]
+        ]
+
+        await query.edit_message_text(
+            "📱 iPhone настройка\n\n"
+            "1️⃣ Установите WireGuard\n"
+            "2️⃣ Откройте приложение\n"
+            "3️⃣ Нажмите Import from file\n"
+            "4️⃣ Выберите VPN конфиг\n\n"
+            "📂 Конфиг будет отправлен после оплаты",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ================= ANDROID =================
+
+    elif data == "android":
+
+        keyboard = [
+            [InlineKeyboardButton("📥 Скачать WireGuard", url=WIREGUARD_ANDROID_URL)],
+            [InlineKeyboardButton("⬅️ Назад", callback_data="devices")]
+        ]
+
+        await query.edit_message_text(
+            "🤖 Android настройка\n\n"
+            "1️⃣ Установите WireGuard\n"
+            "2️⃣ Откройте приложение\n"
+            "3️⃣ Нажмите +\n"
+            "4️⃣ Импортируйте конфиг\n\n"
+            "📂 Конфиг будет отправлен после оплаты",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ================= WINDOWS =================
+
+    elif data == "windows":
+
+        keyboard = [
+            [InlineKeyboardButton("📥 Скачать WireGuard", url=WIREGUARD_WINDOWS_URL)],
+            [InlineKeyboardButton("⬅️ Назад", callback_data="devices")]
+        ]
+
+        await query.edit_message_text(
+            "💻 Windows настройка\n\n"
+            "1️⃣ Установите WireGuard\n"
+            "2️⃣ Откройте программу\n"
+            "3️⃣ Нажмите Add Tunnel\n"
+            "4️⃣ Импортируйте .conf файл\n\n"
+            "📂 Конфиг будет отправлен после оплаты",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ================= MAC =================
+
+    elif data == "mac":
+
+        keyboard = [
+            [InlineKeyboardButton("📥 Скачать WireGuard", url=WIREGUARD_MAC_URL)],
+            [InlineKeyboardButton("⬅️ Назад", callback_data="devices")]
+        ]
+
+        await query.edit_message_text(
+            "🍎 MacOS настройка\n\n"
+            "1️⃣ Установите WireGuard\n"
+            "2️⃣ Откройте приложение\n"
+            "3️⃣ Импортируйте VPN конфиг\n\n"
+            "📂 Конфиг будет отправлен после оплаты",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ================= TARIFFS =================
+
     elif data == "tariffs":
+
         keyboard = [
             [InlineKeyboardButton("💳 1 месяц — 150₽", callback_data="buy_150")],
             [InlineKeyboardButton("💳 3 месяца — 390₽", callback_data="buy_390")],
             [InlineKeyboardButton("💳 7 месяцев — 1190₽", callback_data="buy_1190")],
+            [InlineKeyboardButton("💳 1 год — 2000₽", callback_data="buy_2000")],
             [InlineKeyboardButton("⬅️ Назад", callback_data="back")]
         ]
 
@@ -69,6 +162,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "💳 Выберите тариф:",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
+
+    # ================= BUY =================
 
     elif data == "buy_150":
         await send_payment(query, "150₽", "1 месяц")
@@ -79,7 +174,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "buy_1190":
         await send_payment(query, "1190₽", "7 месяцев")
 
+    elif data == "buy_2000":
+        await send_payment(query, "2000₽", "1 год")
+
+    # ================= PROFILE =================
+
     elif data == "profile":
+
         user = query.from_user
 
         await query.edit_message_text(
@@ -92,7 +193,10 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ])
         )
 
+    # ================= SUPPORT =================
+
     elif data == "support":
+
         await query.edit_message_text(
             f"🆘 Поддержка:\n{SUPPORT_USERNAME}",
             reply_markup=InlineKeyboardMarkup([
@@ -100,15 +204,50 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ])
         )
 
+    # ================= PAID =================
+
+    # ================= PAID =================
+
+   # ================= PAID =================
+    # ================= PAID =================
+
     elif data == "paid":
+
         await query.edit_message_text(
-            "⏳ Платёж отправлен на проверку.\n\n"
-            "После проверки вы получите VPN доступ 📲"
+            "📦 Отправляем конфиги..."
         )
 
+        user_id = query.from_user.id
+
+        configs = {
+            "iPhone": "configs/iphone.conf",
+            "Android": "configs/android.conf",
+            "Windows": "configs/windows.conf",
+            "MacOS": "configs/mac.conf"
+        }
+
+        for name, path in configs.items():
+
+            if os.path.exists(path):
+                with open(path, "rb") as config:
+                    await context.bot.send_document(
+                        chat_id=user_id,
+                        document=config,
+                        filename=f"RichVPN_{name}.conf",
+                        caption=f"📱 {name} конфиг"
+                    )
+            else:
+                await context.bot.send_message(
+                    chat_id=user_id,
+                    text=f"❌ Конфиг {name} пока не загружен"
+                )
+
+    # ================= BACK =================
+
     elif data == "back":
+
         keyboard = [
-            [InlineKeyboardButton("📲 Установить VPN (iOS)", callback_data="install_vpn")],
+            [InlineKeyboardButton("📲 Установить VPN", callback_data="devices")],
             [InlineKeyboardButton("💳 Тарифы", callback_data="tariffs")],
             [InlineKeyboardButton("👤 Профиль", callback_data="profile")],
             [InlineKeyboardButton("🆘 Поддержка", callback_data="support")]
@@ -120,34 +259,18 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-# ================= PAYMENT =================
-async def send_payment(query, amount, tariff):
-
-    keyboard = [
-        [InlineKeyboardButton("✅ Я оплатил", callback_data="paid")],
-        [InlineKeyboardButton("⬅️ Назад", callback_data="tariffs")]
-    ]
-
-    await query.edit_message_text(
-        f"💳 Тариф: {tariff}\n"
-        f"💰 Сумма: {amount}\n\n"
-        f"📱 СБП номер:\n{PAY_PHONE}\n\n"
-        f"🏦 Банк:\n{PAY_BANK}\n\n"
-        "После оплаты нажмите кнопку: ✅ Я оплатил",
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
-
-
 # ================= MAIN =================
+
 def main():
+
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button))
 
-    print("🔥 Bot started")
-    app.run_polling()
+    print("🔥 RichVPN Bot Started")
 
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
