@@ -8,7 +8,7 @@ from telegram.ext import (
 )
 
 # 🔐 ENV (Render переменные)
-TOKEN = os.getenv("8946221626:AAHz0oF5SgGeg9LT_0xiGLVq0q3ZgSLS19Q")
+TOKEN = "8946221626:AAHz0oF5SgGeg9LT_0xiGLVq0q3ZgSLS19Q"
 SHOP_ID = os.getenv("SHOP_ID")
 SECRET_KEY = os.getenv("SECRET_KEY")
 

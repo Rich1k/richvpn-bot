@@ -2,6 +2,6 @@ services:
   - type: worker
     name: richvpn-bot
     env: python
+    pythonVersion: 3.11.9
     buildCommand: pip install -r requirements.txt
     startCommand: python bot.py
-    pythonVersion: 3.11.9
